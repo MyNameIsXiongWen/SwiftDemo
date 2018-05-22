@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="LiveIntelligentTableViewCell" customModule="SwiftDemo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="190"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="189.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="技能营销" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nKL-kH-mLP">
+                        <rect key="frame" x="15" y="13" width="57.5" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="R9S-Mr-YLh"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.2666666667" green="0.2666666667" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c4j-fO-qfk">
+                        <rect key="frame" x="315" y="11.5" width="50" height="18"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="QZd-QA-KUe"/>
+                            <constraint firstAttribute="height" constant="18" id="kJf-he-3Vy"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <inset key="titleEdgeInsets" minX="-20" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <inset key="imageEdgeInsets" minX="37" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <state key="normal" title="全部" image="arrow_right">
+                            <color key="titleColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                        </state>
+                    </button>
+                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NW4-0h-Ks2">
+                        <rect key="frame" x="0.0" y="40" width="375" height="135"/>
+                    </scrollView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="nKL-kH-mLP" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="13" id="0Za-Gk-cbz"/>
+                    <constraint firstAttribute="trailing" secondItem="c4j-fO-qfk" secondAttribute="trailing" constant="10" id="Bmh-CW-p6A"/>
+                    <constraint firstItem="c4j-fO-qfk" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="11.5" id="CHt-N8-wvh"/>
+                    <constraint firstAttribute="trailing" secondItem="NW4-0h-Ks2" secondAttribute="trailing" id="NnM-pg-Toj"/>
+                    <constraint firstItem="NW4-0h-Ks2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="PIt-7G-MHL"/>
+                    <constraint firstItem="nKL-kH-mLP" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="WJM-lW-N8u"/>
+                    <constraint firstItem="NW4-0h-Ks2" firstAttribute="top" secondItem="nKL-kH-mLP" secondAttribute="bottom" constant="12" id="dnS-tI-3TA"/>
+                    <constraint firstAttribute="bottom" secondItem="NW4-0h-Ks2" secondAttribute="bottom" constant="14.5" id="oyW-2o-7Tt"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="contentScrollView" destination="NW4-0h-Ks2" id="swc-Yn-b3a"/>
+                <outlet property="leftTitleLabel" destination="nKL-kH-mLP" id="YpF-CP-pyT"/>
+                <outlet property="rightAllBtn" destination="c4j-fO-qfk" id="QKa-IZ-eIF"/>
+            </connections>
+            <point key="canvasLocation" x="11.5" y="66"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="arrow_right" width="7" height="12"/>
+    </resources>
+</document>

@@ -13,8 +13,8 @@ class NavgationViewController: UINavigationController, UINavigationControllerDel
     override func viewDidLoad() {
         super.viewDidLoad()
         let navBar = UINavigationBar.appearance()
-        navBar.backgroundColor = UIColor.purple
-        navBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.font:UIFont.systemFont(ofSize: 18.0)]
+        navBar.backgroundColor = UIColor.white
+        navBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.black, NSAttributedStringKey.font:UIFont.systemFont(ofSize: 18.0)]
         
         // Do any additional setup after loading the view.
     }
@@ -29,7 +29,7 @@ class NavgationViewController: UINavigationController, UINavigationControllerDel
             viewController.hidesBottomBarWhenPushed = true
             
             let btn = UIButton.init(type: UIButtonType.custom)
-            btn.setImage(UIImage.init(named: "back"), for: UIControlState.normal)
+            btn.setImage(UIImage.init(named: "back_black"), for: UIControlState.normal)
             btn.bounds = CGRect.init(x: 0, y: 0, width: 40, height: 30)
             btn.imageEdgeInsets = UIEdgeInsetsMake(0, -15, 0, 15)
             btn.imageView?.contentMode = UIViewContentMode.scaleAspectFill

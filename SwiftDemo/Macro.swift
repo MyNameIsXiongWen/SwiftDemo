@@ -16,7 +16,7 @@ public func swift_setScrollViewContentInsetAdjustmentNever(scrollView: UIScrollV
     }
 }
 
-
+public let HttpURLString :String = "http://mobile.ishangbo.com/index.php/api/"
 
 class Macro: NSObject {
 

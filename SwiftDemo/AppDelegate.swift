@@ -20,8 +20,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.makeKeyAndVisible()
         
-        let rootC = TabbarViewController()
-        self.window?.rootViewController = rootC
+        if UserDefaults.standard.integer(forKey: "LogIn") == 1 {
+            let tabbar = TabbarViewController()
+            self.window?.rootViewController = tabbar
+        }
+        else {
+            let loginC = LoginViewController(nibName: "LoginViewController", bundle: nil)
+            let nav = UINavigationController.init(rootViewController: loginC)
+            self.window?.rootViewController = nav
+        }
+        
         return true
     }
 
