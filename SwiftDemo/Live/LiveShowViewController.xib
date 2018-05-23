@@ -130,7 +130,7 @@
         </view>
     </objects>
     <resources>
-        <image name="live_filter_unselected" width="16" height="16"/>
-        <image name="live_triangle" width="16" height="16"/>
+        <image name="live_filter_unselected" width="12" height="13"/>
+        <image name="live_triangle" width="6" height="12"/>
     </resources>
 </document>

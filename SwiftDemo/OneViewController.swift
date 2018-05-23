@@ -111,7 +111,8 @@ class OneViewController: UIViewController, UITableViewDelegate, UITableViewDataS
             navigationController?.pushViewController(viewCon, animated: true)
         }
         else if btn.tag == 1 {
-            
+            let viewCon = LiveCreateViewController.init(nibName: "LiveCreateViewController", bundle: nil)
+            navigationController?.pushViewController(viewCon, animated: true)
         }
         else if btn.tag == 2 {
             
@@ -231,7 +232,8 @@ class OneViewController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     @objc func clickAll(btn:UIButton) -> Void {
         if btn.tag == 0 {
-            
+            let viewCon = LiveShowViewController.init(nibName: "LiveShowViewController", bundle: nil)
+            navigationController?.pushViewController(viewCon, animated: true)
         }
         else {
             
@@ -239,7 +241,7 @@ class OneViewController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     func clickInformation(array:NSMutableArray,index:NSInteger, type:ContentType) -> Void {
-        let model:IntelligentModel = array.object(at: index) as! IntelligentModel
+//        let model:IntelligentModel = array.object(at: index) as! IntelligentModel
         if type == .ContentTypeLive {
             
         }

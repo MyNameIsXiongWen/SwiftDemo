@@ -41,7 +41,6 @@
                 for (NSDictionary* i in ary){
                     [self.bannerArray addObject:i[@"adimg"]];
                 }
-//                self.cycleScrollView.imageURLStringsGroup = ary;
                 //tableview展示
                 self.intelligentArray = [ContentModel mj_objectArrayWithKeyValuesArray:responseDictionary[@"group"]];
                 self.anchorArray = [IntelligentModel mj_objectArrayWithKeyValuesArray:responseDictionary[@"anchor"]];

@@ -8,7 +8,7 @@
 
 import UIKit
 
-let MainCollectionViewCellIdentifier = "mainCollectionViewCellIdentifier"
+let LiveCollectionViewCellIdentifier = "liveCollectionViewCellIdentifier"
 class LiveShowViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     @IBOutlet weak var distanceButton: UIButton!
@@ -23,7 +23,7 @@ class LiveShowViewController: UIViewController, UICollectionViewDelegate, UIColl
     var anchor_type:String = ""
     var distanceType : Int = 0
     var ageType : Int = 0
-    var filterView = LiveFilterView.init()
+    var filterView : LiveFilterView?
     var dataArray = NSMutableArray()
     var filterArray = NSMutableArray()
     var selectedIndexArray = NSMutableArray()
@@ -40,9 +40,9 @@ class LiveShowViewController: UIViewController, UICollectionViewDelegate, UIColl
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if !filterView.isEqual(nil) {
-            filterView.dismiss()
-//            filterView = nil
+        if filterView != nil {
+            filterView?.dismiss()
+            filterView = nil
         }
     }
     
@@ -53,35 +53,35 @@ class LiveShowViewController: UIViewController, UICollectionViewDelegate, UIColl
         collectionViewLayout.minimumLineSpacing = 10
         collectionViewLayout.minimumInteritemSpacing = 10
         
-        let collectionView:UICollectionView = UICollectionView(frame: CGRect.init(x: 0, y: 64, width: SCREEN_WIDTH, height: SCREEN_HEIGHT-64), collectionViewLayout: collectionViewLayout)
-        self.view.addSubview(collectionView)
+        collectionView.collectionViewLayout = collectionViewLayout
         collectionView.backgroundColor = UIColor.white
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.register(UINib(nibName: "LiveCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: MainCollectionViewCellIdentifier)
-        collectionView.mj_header = MJRefreshHeader.init(refreshingTarget: self, refreshingAction: #selector(refreshHeader))
-        collectionView.mj_footer = MJRefreshFooter.init(refreshingTarget: self, refreshingAction: #selector(refreshFooter))
+        collectionView.register(UINib.init(nibName: "LiveCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: LiveCollectionViewCellIdentifier)
+        collectionView.mj_header = MJRefreshHeader.init(refreshingBlock: {
+            self.refreshHeader()
+        })
+        collectionView.mj_footer = MJRefreshFooter.init(refreshingBlock: {
+            self.refreshFooter()
+        })
     }
     
     private func getAnchorListRequest() {
         SVProgressHUD.setDefaultStyle(.light)
         SVProgressHUD.show()
-        let dic = NSMutableDictionary.init()
-        dic.setObject(currentPage, forKey: "page" as NSCopying)
+        var dic:[String:String] = ["page":"\(currentPage)"]
         if orderby.lengthOfBytes(using: .utf8) > 0 {
-            dic.setObject(orderby, forKey: "orderby" as NSCopying)
+            dic.updateValue(orderby, forKey: "orderby")
         }
         if type.lengthOfBytes(using: .utf8) > 0 {
-            dic.setObject(type, forKey: "type" as NSCopying)
+            dic.updateValue(type, forKey: "type")
         }
         if exp.lengthOfBytes(using: .utf8) > 0 {
-            dic.setObject(exp, forKey: "exp" as NSCopying)
+            dic.updateValue(exp, forKey: "exp")
         }
         if anchor_type.lengthOfBytes(using: .utf8) > 0 {
-            dic.setObject(anchor_type, forKey: "anchor_type" as NSCopying)
+            dic.updateValue(anchor_type, forKey: "anchor_type")
         }
         
-        NetWorkManager.sharedNetWorkManager.NetWorkRequest(requestType: .POST, url: "\(HttpURLString)anchor/anchor_list", params: dic as! [String : Any], success: { (responseObject) in
+        NetWorkManager.sharedNetWorkManager.NetWorkRequest(requestType: .POST, url: "\(HttpURLString)anchor/anchor_list", params: dic, success: { (responseObject) in
             SVProgressHUD.dismiss()
             if responseObject?["errcode"] as? Int == 1 {
                 if self.currentPage == 1 {
@@ -101,7 +101,7 @@ class LiveShowViewController: UIViewController, UICollectionViewDelegate, UIColl
     @objc func refreshHeader() -> Void {
         currentPage = 1
         getAnchorListRequest()
-//        collectionView.mj_header.endRefreshing()
+        collectionView.mj_header.endRefreshing()
     }
     @objc func refreshFooter() -> Void {
         currentPage += 1
@@ -115,10 +115,10 @@ class LiveShowViewController: UIViewController, UICollectionViewDelegate, UIColl
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCellIdentifier, for: indexPath) as! LiveCollectionViewCell
-        let model:IntelligentModel = dataArray[indexPath.row] as! IntelligentModel
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LiveCollectionViewCellIdentifier, for: indexPath) as! LiveCollectionViewCell
+        let model = dataArray[indexPath.row] as! IntelligentModel
         cell.photoImageView.sd_setImage(with: URL.init(string: model.photo), completed: nil)
-        cell.ageLabel.text = "\(model.age)岁"
+        cell.ageLabel.text = model.age.appendingFormat("岁")
         cell.timeLabel.text = model.last_login
         cell.nameLabel.text = model.nickname
         if Int(model.sex) == 2 {
@@ -195,67 +195,74 @@ class LiveShowViewController: UIViewController, UICollectionViewDelegate, UIColl
             refreshHeader()
         }
         else if btn.tag == 3 {
-            filterView = LiveFilterView.init(frame: CGRect.init(x: 0, y: 64+40, width: SCREEN_WIDTH, height: SCREEN_HEIGHT-64-40-150), withFilterArray: filterArray as! [Any], andSelectedIndexArray: selectedIndexArray)
-            filterView.show()
-            btn.setImage(UIImage.init(named: "live_filter_selected"), for: .normal)
-            btn.setTitleColor(UIColor.init(fromHexString: "457fea"), for: .normal)
-            filterView.dismissFilterBlock = {(array:NSMutableArray) -> Void in
-                self.filterView.dismiss()
-                if array[0] as! Int == 9999 && array[1] as! Int == 9999 && array[2] as! Int == 9999 {
-                    self.filtButton.setImage(UIImage.init(named: "live_filter_unselected"), for: .normal)
-                    self.filtButton.setTitleColor(UIColor.init(fromHexString: "333333"), for: .normal)
+            if filterView == nil {
+                filterView = LiveFilterView.init(frame: CGRect.init(x: 0, y: 64+40, width: SCREEN_WIDTH, height: SCREEN_HEIGHT-64-40-150), withFilterArray: filterArray as! [Any], andSelectedIndexArray: selectedIndexArray)
+                filterView?.show()
+                btn.setImage(UIImage.init(named: "live_filter_selected"), for: .normal)
+                btn.setTitleColor(UIColor.init(fromHexString: "457fea"), for: .normal)
+                filterView?.dismissFilterBlock = { arr in
+                    let array:NSMutableArray = NSMutableArray.init(array: arr!)
+                    self.filterView?.dismiss()
+                    self.filterView = nil
+                    if array[0] as! Int == 9999 && array[1] as! Int == 9999 && array[2] as! Int == 9999 {
+                        self.filtButton.setImage(UIImage.init(named: "live_filter_unselected"), for: .normal)
+                        self.filtButton.setTitleColor(UIColor.init(fromHexString: "333333"), for: .normal)
+                    }
                 }
-            } as! DismissFilterBlock
-            filterView.confirmFilterBlock = {(array:NSMutableArray) -> Void in
-                self.selectedIndexArray = array
-                let dic0:NSDictionary = self.filterArray[0] as! NSDictionary
-                let tempDataArray0 = dic0.allKeys
-                let dic1:NSDictionary = self.filterArray[1] as! NSDictionary
-                let tempDataArray1 = dic1.allKeys
-                if array[2] as! Int != 9999 {
-                    if array[2] as! Int == 0 {
+                filterView?.confirmFilterBlock = {arr in
+                    let array:NSMutableArray = NSMutableArray.init(array: arr!)
+                    self.selectedIndexArray = array
+                    let dic0:NSDictionary = self.filterArray[0] as! NSDictionary
+                    let tempDataArray0:NSArray = dic0.allValues.last as! NSArray
+                    let dic1:NSDictionary = self.filterArray[1] as! NSDictionary
+                    let tempDataArray1:NSArray = dic1.allValues.last as! NSArray
+                    if array[2] as! Int != 9999 {
+                        if array[2] as! Int == 0 {
+                            self.type = ""
+                        }
+                        else {
+                            self.type = "\(array[2])"
+                        }
+                    }
+                    else {
                         self.type = ""
                     }
-                    else {
-                        self.type = array[2] as! String
+                    if array[1] as! Int != 9999 {
+                        if array[1] as! Int == 0 {
+                            self.exp = ""
+                        }
+                        else {
+                            self.exp = "\(tempDataArray1[array[1] as! Int])"
+                        }
                     }
-                }
-                else {
-                    self.type = ""
-                }
-                if array[1] as! Int != 9999 {
-                    if array[1] as! Int == 0 {
+                    else {
                         self.exp = ""
                     }
-                    else {
-                        self.exp = tempDataArray1[array[1] as! Int] as! String
+                    if array[0] as! Int != 9999 {
+                        if array[0] as! Int == 0 {
+                            self.anchor_type = ""
+                        }
+                        else {
+                            self.anchor_type = "\(tempDataArray0[array[0] as! Int])"
+                        }
                     }
-                }
-                else {
-                    self.exp = ""
-                }
-                if array[0] as! Int != 9999 {
-                    if array[0] as! Int == 0 {
+                    else {
                         self.anchor_type = ""
                     }
-                    else {
-                        self.anchor_type = tempDataArray0[array[0] as! Int] as! String
+                    self.filterView?.dismiss()
+                    self.filterView = nil
+                    self.refreshHeader()
+                    if array[0] as! Int == 9999 && array[1] as! Int == 9999 && array[2] as! Int == 9999 {
+                        self.filtButton.setImage(UIImage.init(named: "live_filter_unselected"), for: .normal)
+                        self.filtButton.setTitleColor(UIColor.init(fromHexString: "333333"), for: .normal)
                     }
                 }
-                else {
-                    self.anchor_type = ""
-                }
-                self.filterView.dismiss()
-                self.refreshHeader()
-                if array[0] as! Int == 9999 && array[1] as! Int == 9999 && array[2] as! Int == 9999 {
-                    self.filtButton.setImage(UIImage.init(named: "live_filter_unselected"), for: .normal)
-                    self.filtButton.setTitleColor(UIColor.init(fromHexString: "333333"), for: .normal)
-                }
-            } as! ConfirmFilterBlock
-            return
+                return
+            }
         }
-        if !filterView.isEqual(nil) {
-            filterView.dismiss()
+        if filterView != nil {
+            filterView?.dismiss()
+            filterView = nil
             filtButton.setImage(UIImage.init(named: "live_filter_unselected"), for: .normal)
             filtButton.setTitleColor(UIColor.init(fromHexString: "333333"), for: .normal)
         }

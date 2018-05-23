@@ -16,4 +16,11 @@
 #import "LiveView.h"
 #import "LiveFilterView.h"
 #import "LiveCollectionViewCell.h"
+#import "LiveCreateTableViewCell.h"
+#import "BottomSelectView.h"
+#import "LiveCreateFreeView.h"
+#import "LiveCharmPhotoModel.h"
+#import "ZLPhotoAssets.h"
+#import "UIImage+ZLPhotoLib.h"
+#import "ZLPhotoPickerBrowserViewController.h"
 
