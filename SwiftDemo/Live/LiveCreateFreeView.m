@@ -53,6 +53,7 @@ static NSString *const FREETABLEVIEW_ID = @"freetableview_id";
     [self addSubview:closeBtn];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 43, self.frame.size.width, 30)];
     titleLabel.text = @"是否收费照片?";
+    titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.textColor = [UIColor colorFromHexString:@"457fea"];
     titleLabel.font = [UIFont systemFontOfSize:18.0];
     [self addSubview:titleLabel];

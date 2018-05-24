@@ -181,7 +181,7 @@ class LiveCreateViewController: UIViewController, UITableViewDelegate, UITableVi
             xingxiang.textColor = UIColor.init(fromHexString: "333333")
             xingxiang.font = UIFont.systemFont(ofSize: 14.0)
             cell?.addSubview(xingxiang)
-            
+            configPhotoImageView(cell: cell!)
             return cell!
         }
         else {
@@ -227,14 +227,9 @@ class LiveCreateViewController: UIViewController, UITableViewDelegate, UITableVi
         view.endEditing(true)
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 1 || indexPath.row == 2 || indexPath.row == 4 || indexPath.row == 5 {
-//            var title:String = ""
             let object:NSDictionary = filterArray[indexPath.row] as! NSDictionary
-            let dataArray = object.allValues as! [String]
+            let dataArray = object.allValues.last as! [String]
             let title = "请选择" + ((object.allKeys.last) as! String)
-//            if object.count > 0 {
-//                dataArray = object.allValues as NSArray
-//                title = "请选择" + ((object.allKeys.last) as! String)
-//            }
             var selectedNum:Int = 0
             if indexPath.row == 1 {
                 if typeString != "请选择" {
@@ -366,15 +361,15 @@ class LiveCreateViewController: UIViewController, UITableViewDelegate, UITableVi
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if selectCity {
             if component == 0 {
-                return provinceArray.object(at: row) as! String
+                return provinceArray.object(at: row) as? String
             }
-            return cityArray.object(at: row) as! String
+            return cityArray.object(at: row) as? String
         }
         else {
             if component == 0 {
-                return leftSalaryArray.object(at: row) as! String
+                return leftSalaryArray.object(at: row) as? String
             }
-            return rightSalaryArray.object(at: row) as! String
+            return rightSalaryArray.object(at: row) as? String
         }
     }
     
@@ -429,6 +424,87 @@ class LiveCreateViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
             }
         }
+    }
+    
+    func configPhotoImageView(cell:UITableViewCell) -> Void {
+        for i:Int in 0...picArray.count {
+            let perWidth = (SCREEN_WIDTH-30-30)/4
+            let imgView:UIImageView = UIImageView.init(frame: CGRect.init(x: 15+(perWidth+10)*CGFloat(i%4), y: 25+10+(perWidth+10)*CGFloat(i/4), width: perWidth, height: perWidth))
+            imgView.contentMode = .scaleAspectFill
+            imgView.layer.masksToBounds = true
+            cell.addSubview(imgView)
+            let btn:UIButton = UIButton.init(type: .custom)
+            btn.frame = imgView.frame
+            cell.addSubview(btn)
+            let tagImgView:UIImageView = UIImageView.init(frame: CGRect.init(x: imgView.frame.origin.x-5, y: imgView.frame.origin.y+6, width: 45, height: 22))
+            tagImgView.image = UIImage.init(named: "live_tag")
+            cell.addSubview(tagImgView)
+            if i == picArray.count {
+                tagImgView.isHidden = true
+                imgView.image = UIImage.init(named: "add_photo")
+                btn.addTarget(self, action: #selector(isPhotoFree), for: .touchUpInside)
+                if i == MAXPHOTOCOUNT {
+                    imgView.isHidden = true
+                    btn.isHidden = true
+                }
+                else {
+                    imgView.isHidden = false
+                    btn.isHidden = false
+                }
+            }
+            else {
+                let model:LiveCharmPhotoModel = picArray[i] as! LiveCharmPhotoModel
+                imgView.sd_setImage(with: URL.init(string: model.url), completed: nil)
+                if Int(model.fee) == 0 {
+                    tagImgView.isHidden = true
+                }
+                btn.tag = i
+                btn.addTarget(self, action: #selector(tapBrowser(btn:)), for: .touchUpInside)
+                imgView.isHidden = false
+                btn.isHidden = false
+            }
+        }
+    }
+    
+    @objc func isPhotoFree() -> Void {
+        view.endEditing(true)
+        let freeView:LiveCreateFreeView = LiveCreateFreeView.init(frame: CGRect.init(x: (SCREEN_WIDTH-261)/2, y: (SCREEN_HEIGHT-375)/2, width: 261, height: 375))
+        freeView.confirmSelecrBlock = { money in
+            self.moneyString = money
+            self.addPhotoClick()
+        }
+        freeView.show()
+    }
+    
+    func addPhotoClick() -> Void {
+        let alertVc:UIAlertController = UIAlertController.init(title: nil, message: nil, preferredStyle: .actionSheet)
+        let actionCancel:UIAlertAction = UIAlertAction.init(title: "取消", style: .cancel, handler: nil)
+        let actionLibrary:UIAlertAction = UIAlertAction.init(title: "从相册选择", style: .default) { (action:UIAlertAction) in
+            self.photoFromPhotoLib()
+        }
+        let actionCamera:UIAlertAction = UIAlertAction.init(title: "拍照", style: .default) { (action:UIAlertAction) in
+            
+        }
+        alertVc.addAction(actionLibrary)
+        alertVc.addAction(actionCamera)
+        alertVc.addAction(actionCancel)
+        present(alertVc, animated: true, completion: nil)
+    }
+    
+    func photoFromPhotoLib() -> Void {
+        let pickerVc:ZLPhotoPickerViewController = ZLPhotoPickerViewController.init()
+        pickerVc.maxCount = MAXPHOTOCOUNT-picArray.count
+        pickerVc.status = .cameraRoll
+        pickerVc.selectPickers = nil
+        pickerVc.photoStatus = .photos
+        pickerVc.callBack = { status in
+            
+        }
+        pickerVc.showPickerVc(self)
+    }
+    
+    @objc func tapBrowser(btn:UIButton) -> Void {
+        
     }
 
     /*
